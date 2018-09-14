@@ -17,6 +17,14 @@ namespace Todolist.Controllers
             return db.Categories.OrderBy(x => x.Nom);
         }
 
+        public IHttpActionResult GetCategorie(int id)
+        {
+            var categorie = db.Categories.Find(id);
+            if (categorie == null)
+                return NotFound();
+            return Ok(categorie);
+        }
+
         public IHttpActionResult PostCategories(Categorie categorie)
         {
             if (ModelState.IsValid)  // si l'état du modele est ok, càd que le tous les champs sont non nulls
@@ -37,7 +45,7 @@ namespace Todolist.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(db.Categories.Find(id) == null)
+            if(db.Categories.Count(x => x.ID == id) !=1)
                 return BadRequest();
 
             db.Entry(categorie).State = System.Data.Entity.EntityState.Modified;
@@ -45,6 +53,20 @@ namespace Todolist.Controllers
             return StatusCode(HttpStatusCode.NoContent); // renvoie une notification comme quoi ça s'est bien déroulé, mais sans contenu
 
         }
+
+        public IHttpActionResult DeleteCategories(int id)
+        {
+
+            var categorie = db.Categories.Find(id);
+
+            if (categorie == null)
+                return NotFound();
+
+            db.Entry(categorie).State = System.Data.Entity.EntityState.Deleted;
+            db.SaveChanges();
+            return Ok(categorie);
+        }
+
 
         protected override void Dispose(bool disposing) // pour libérer la connection du contexte avec la base de données
         {
