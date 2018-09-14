@@ -14,6 +14,6 @@ namespace Todolist.Data
 
         }
 
-        public DbSet< Categorie> Categories { get; set; }
+        public DbSet<Categorie> Categories { get; set; }
     }
 }
