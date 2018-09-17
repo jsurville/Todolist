@@ -7,13 +7,13 @@ namespace Todolist.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class Init : IMigrationMetadata
+    public sealed partial class Initiale : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Init));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Initiale));
         
         string IMigrationMetadata.Id
         {
-            get { return "201809140842488_Init"; }
+            get { return "201809170756144_Initiale"; }
         }
         
         string IMigrationMetadata.Source
