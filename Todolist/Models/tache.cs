@@ -9,7 +9,6 @@ namespace Todolist.Models
 {
     public class Tache
     {
-        [Required]
         public int ID { get; set; }
 
         [Required]

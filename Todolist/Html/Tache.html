@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous" />
+    
+   </head >
+
+<body>
+    <div class="container">
+        <h1> Tache</h1>
+
+        <form>
+
+            <div class="form-group">
+                <label for="Nom">Nom</label>
+                <input type="text" class="form-control" id="Nom" />
+            </div>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea class="form-control" id="Description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="Categorie">Categorie</label>
+                <select class="form-control" id="Categorie" required></select>
+            </div>
+        </form>
+        <button class="btn btn-primary" onclick="Enregistrer()"> Enregistrer</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script>
+        function Enregistrer() {
+            var tache = {
+                Nom: $('#Nom').val(),
+                Description: $('#Description').val(),
+                CategorieID: $('#Categorie').val()
+            }
+            console.log(Nom)
+            $.ajax({
+                type: 'POST',
+                url: '/api/taches',
+                data: tache,
+                success: function () { alert("OK") },
+                error: function () {
+                    console.log(Nom)
+                    alert("Erreur")
+                }
+            });
+            return false;
+        }
+
+        function LoadCategories() {
+            $.ajax({
+                type:'GET',
+                url: '/api/categories/',
+                success: function (categories) {
+                    var select = $("#Categorie");
+                    select.empty();
+                    select.append($('<option></option>'));
+                    console.log(categories);
+                    for (categorie of categories) {
+                        var option = $('<option></option>');
+                        option.val(categorie.ID);
+                        option.text(categorie.Nom);
+                        select.append(option);
+                    }
+                }
+            });
+        }
+
+        LoadCategories();
+    </script>
+</body>
+ </html >
