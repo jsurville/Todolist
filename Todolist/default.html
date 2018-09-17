@@ -8,9 +8,9 @@
 </head>
 <body>
     <h1> Coucou </h1>
-    <ul id="listeTaches">
+    <div id="listeTaches">
 
-    </ul>
+    </div>
     <script>
         function getTaches() {
             $.ajax({
@@ -18,27 +18,50 @@
                 success: function (taches) {
 
                 // Avec jQuery
-                    var ulListeTaches = $('#listeTaches');
+                    var divListeTaches = $('#listeTaches');
                     taches.forEach(function (tache) {
-                        var li = $('<li/>').text(tache.Nom);
-                        //alert(li.html());
-                        ulListeTaches.append(li);
+                        var divTache = $('<div class="Tache"></div>');
+                        divTache.data("id", tache.ID);
+                        var inputEtat = $('<input type="radio" "custom-control-input"> ');
+                        inputEtat.attr('checked', tache.Statut);
+                        //var inputEtat = $('<input id="id1" type="radio" "custom-control-input"> dfgsd');
+
+                        // Appeler le serveur quand on clique dessus:
+                        inputEtat.on ('click', function () {
+                            var div = $(this).closest(".Tache");
+                            var idTache = div.data("id");
+                            ModifierStatutTache(idTache, this.checked);
+                        })
+                        divTache.append(inputEtat);
+                        //divTache.append($('<label for = "id1"></label>').text(tache.Nom)); //  for="id1" ça permet de pouvoir cliquer sur le libélé du bouton
+                        divTache.append($('<label></label>').text(tache.Nom));
+                        divListeTaches.append(divTache);
+
                     });
 
-                    // Sans jQuery
-                    var ulListeTaches1 = document.getElementById('listeTaches');
-                    for (tache of taches) {
-                        var li1 = document.createElement("li");
-                        li1.textContent = tache.Nom;
-                        ulListeTaches1.appendChild(li1)
-                        console.log(tache.Nom);
-                    }
+                    //// Sans jQuery
+                    //var ulListeTaches1 = document.getElementById('listeTaches');
+                    //for (tache of taches) {
+                    //    var li1 = document.createElement("li");
+                    //    li1.textContent = tache.Nom;
+                    //    ulListeTaches1.appendChild(li1)
+                    //    console.log(tache.Nom);
+                    //}
                 },
                 error: function () {
                     alert("Cocuou")
                 }
             });
         }
+
+        function ModifierStatutTache(id, statut) {
+            $.ajax({
+                type: 'PUT',
+                url: "http://localhost:49503/api/tachestatut/" + id + '?statut=' + statut,
+                success: function () { }
+            })
+        }
+
         getTaches();
     </script>
 </body>
