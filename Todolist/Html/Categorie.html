@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous" />
+    <style>
+        body {            
+            background-color: RGB(230,230,230);
+        }
+        .Categorie {
+            border: solid 1px;
+            padding: 10px;
+        }
+        .Categorie :hover {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+        .Categorie button {
+            float: right;
+        }
+        .ulmenu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+        li {
+            float: left;
+        }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+                /* Change the link color to #111 (black) on hover */
+            li a:hover {
+                background-color: #111;
+                text-decoration: none;
+            }
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body id="idarea">
+        <ul class="ulmenu">
+        <li class="menu"><a  id="accueil" href="/index.html"> ToDoList</a></li>
+        <li class="menu"><a id="tach" href="/Html/Tache.html"> Tâches </a></li>
+        <li class="menu"><a class="active" id="cat" href="/Html/Categorie.html"> Catégories</a></li>
+    </ul>
+
+        <div class="container">
+            <h1> Liste des Catégories </h1>
+            <div id="listeCategories">
+            </div>
+            <form novalidate>
+                <div class="form-group">
+                    <label for="Nom">Nom</label>
+                    <input type="text" class="form-control" id="Nom" required />
+                    <div class="invalid-feedback"> Champ requis </div>
+                </div>
+            </form>
+            <div style="float:right">
+                <button class="btn btn-primary" onclick="Enregistrer()"> Enregistrer</button>
+                <a class="btn btn-default" href="/Html/Categorie.html"> Annuler</a>
+            </div>
+            <br />
+
+
+        </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script>
+        function Valider() {
+
+            var form = $('form');
+            let estValide = form[0].checkValidity();
+            form.addClass("was-validated");
+            return estValide;
+        }
+
+        function Enregistrer() {
+            if (!Valider()) {
+                return false
+            }
+            var categorie = {
+                Nom: $('#Nom').val()
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/api/categories',
+                data: categorie,
+                success: function () {
+                    jQuery("#listeCategories").empty();
+                    alert("OK");
+                    jQuery('#Nom').val("");
+                    LoadCategories();
+                },
+                error: function () {
+                    console.log(Nom)
+                    alert("Erreur")
+                }
+            })
+                .done();
+            return false;
+        }
+
+        function LoadCategories() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/categories/',
+                success: function (categories) {
+                    var div1 = $("#listeCategories");
+
+                    for (categorie of categories) {
+                        var ul = $('<div class="alert-info Categorie alert"></div>');
+                        ul.attr("data-id", categorie.ID);
+
+                        var buttonDelete = $('<button class="btn btn-danger btn-sm Catgorie"> Delete </button> ');
+                        buttonDelete.on('click', function () {
+                            var div = $(this).closest(".Categorie");
+                            var idCategorie = div.attr("data-id");
+                            Supprimer(idCategorie);
+                        })
+                        ul.val(categorie.ID);
+                        ul.text(categorie.Nom);
+                        ul.append(buttonDelete);
+                        div1.append(ul);
+
+                    }
+                }
+            });
+        }
+
+        function Supprimer(idCategorie) {
+            alert("Etes-vous sûr de vouloir supprimer cette Catégorie ?");
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/categories/' + idCategorie + '',
+                success: function () {
+                    jQuery('#Nom').val("");
+                    jQuery('#listeCategories').empty();
+                    alert("OK");
+                    LoadCategories();
+
+                },
+                error: function () {
+                    alert("Impossible de supprimer. Peut-être la catégorie est liée à une tâche ?")
+                },
+
+            }
+            );
+        }
+
+        $(document).ready(function () {
+            LoadCategories();
+            $("#Nom").focus();
+        });
+
+
+
+    </script>
+</body>
+</html>

@@ -8,17 +8,62 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous" />
     
+    <style>
+        body {
+            background-color:RGB(230,230,230);
+        }
+        .ulmenu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+            li a {
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+                /* Change the link color to #111 (black) on hover */
+                li a:hover {
+                    background-color: #111;
+                    text-decoration: none;
+                }
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+
+    </style>
+
    </head >
 
 <body>
-    <div class="container">
-        <h1> Tache</h1>
 
-        <form>
+    <ul class="ulmenu">
+        <li class="menu"><a id="accueil" href="/index.html"> ToDoList</a></li>
+        <li class="menu"><a class="active" id="tach" href="/Html/Tache.html"> Tâches </a></li>
+        <li class="menu"><a id="cat" href="/Html/Categorie.html"> Catégories</a></li>
+    </ul>
+
+    <div class="container" id="idarea">
+        <h1> Tâches </h1>
+
+        <form novalidate>
 
             <div class="form-group">
                 <label for="Nom">Nom</label>
-                <input type="text" class="form-control" id="Nom" />
+                <input type="text" class="form-control" id="Nom" required />
+                <div class="invalid-feedback"> Champ requis </div>
             </div>
             <div class="form-group">
                 <label for="Description">Description</label>
@@ -30,10 +75,23 @@
             </div>
         </form>
         <button class="btn btn-primary" onclick="Enregistrer()"> Enregistrer</button>
+        <a class="btn btn-default" href="/index.html"> Annuler</a> 
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <script>
+
+        function Valider() {
+           
+            var form = $('form');
+            let estValide = form[0].checkValidity();
+            form.addClass("was-validated");
+            return estValide;
+        }
+
         function Enregistrer() {
+            if (!Valider()) {
+                return false
+            }
             var tache = {
                 Nom: $('#Nom').val(),
                 Description: $('#Description').val(),
@@ -44,7 +102,7 @@
                 type: 'POST',
                 url: '/api/taches',
                 data: tache,
-                success: function () { alert("OK") },
+                success: function () { alert("OK"); jQuery('#idarea').html(""); LoadCategories() },
                 error: function () {
                     console.log(Nom)
                     alert("Erreur")
@@ -55,7 +113,7 @@
 
         function LoadCategories() {
             $.ajax({
-                type:'GET',
+                type: 'GET',
                 url: '/api/categories/',
                 success: function (categories) {
                     var select = $("#Categorie");
@@ -72,7 +130,10 @@
             });
         }
 
-        LoadCategories();
+        $(document).ready(function () {
+            LoadCategories();
+            $("#Nom").focus();
+        });
     </script>
 </body>
  </html >

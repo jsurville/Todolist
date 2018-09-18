@@ -8,30 +8,74 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous" />
     <style>
-        .Tache {
-            border:solid 1px;
-            padding: 10px;
-            
+
+        body {
+            background-color: RGB(230,230,230);
         }
-            .Tache button {
+
+        .Tache {
+            border: solid 1px;
+            padding: 10px;
+        }
+        .Tache button {
                 float: right;
             }
-            .Tache :hover {
-                background-color: #4CAF50; /* Green */
-                color: white;
-            }
 
+            /*.Tache :hover {
+                background-color: #4CAF50;
+             color: white;}/* Green */
+               
+            
         .Tache input[type=checkbox] {
             margin-right:10px;
         }
+        .ulmenu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+            li a {
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+                /* Change the link color to #111 (black) on hover */
+                li a:hover {
+                    background-color: #111;
+                    text-decoration: none;
+                }
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
 
     </style>
 </head>
 <body>
+
+
+    <ul class="ulmenu">
+        <li class="menu"><a class="active" id="accueil" href="index.html"> ToDoList</a></li>
+        <li class="menu"><a id="planete" href="/Html/Tache.html"> Tâches </a></li>
+        <li class="menu"><a id="perso" href="/Html/Categorie.html"> Catégories</a></li>
+    </ul>
+
     <div class="container">
         <h1>Todo</h1>
         <div style="margin-bottom:25px">
-            <a href="/Html/Tache.html" class="btn btn-primary" > Nouvelle Tache</a>
+            <a href="/Html/Tache.html" class="btn btn-primary"> Nouvelle Tâche</a>
+            <a href="/Html/Categorie.html" class="btn btn-primary"> Catégories </a>
         </div>
 
         <div id="listeTaches">
@@ -50,13 +94,14 @@
                     var divListeTaches = $('#listeTaches');
                     divListeTaches.empty();
                     for (tache of taches) {
-                        var divTache = $('<div class="Tache alert"></div>'); // on ajoute la classe tache alert du bootstrap
+                        var divTache = $('<div class="Tache alert alert-info"></div>'); // on ajoute la classe tache alert du bootstrap
                         divTache.attr("data-id", tache.ID);
                         var inputEtat = $('<input type="checkbox">');
                         inputEtat.attr('checked', tache.Statut);
                         if (tache.Statut) {
-                            divTache.addClass('alert-success'); // classe qui permet de faire apparaitre en vert si l'état est "coché"
+                            divTache.addClass('alert-danger'); // classe qui permet de faire apparaitre en vert si l'état est "coché"
                         }
+                      
                         // Appeler le serveur quand on clique dessus
                         inputEtat.on('click', function () {
                             var div = $(this).closest(".Tache");
@@ -90,23 +135,25 @@
                 success: function () {
                     var divTache = $(input).closest(".Tache");
                     if (input.checked) {
+                        divTache.removeClass('alert-info');
                         divTache.addClass('alert-success'); // passe en fond vert
                     } else {
                         divTache.removeClass('alert-success');
+                        divTache.addClass('alert-info');
                     }
                 },
                 error: Erreur
             });
         }
 
-        function Supprimer(id,div) {
+        function Supprimer(id, div) {
             $.ajax({
                 type: 'DELETE',
                 url: '/api/taches/' + id + '',
                 success: function (input) {
-                    
+
                     $(div).remove();
-                    console.log(divTache);
+
                 },
                 error: function () {
                     alert("Erreur !")
