@@ -60,7 +60,7 @@
     </ul>
 
         <div class="container">
-            <h1> Liste des Catégories </h1>
+            <h1> Mes Catégories </h1>
             <div id="listeCategories">
             </div>
             <form novalidate>
@@ -71,7 +71,7 @@
                 </div>
             </form>
             <div style="float:right">
-                <button class="btn btn-primary" onclick="Enregistrer()"> Enregistrer</button>
+                <button class="btn btn-primary" onclick="Ajouter()"> Enregistrer</button>
                 <a class="btn btn-default" href="/Html/Categorie.html"> Annuler</a>
             </div>
             <br />
@@ -90,7 +90,7 @@
             return estValide;
         }
 
-        function Enregistrer() {
+        function Ajouter() {
             if (!Valider()) {
                 return false
             }
@@ -116,28 +116,68 @@
             return false;
         }
 
+        function Modifier(buttonModif) {
+            var div = buttonModif.closest('.Categorie');
+            var span = div.find('span');
+            var nom = span.text();
+            div.data('nom', nom); 
+            console.log(nom);
+            div.empty();
+            var input = $('<input type="text"/>').val(span.text());
+            div.append(input);
+            input.focus();
+            input.select();
+           
+            var buttonEnregistrer = $('<button class="btn btn-primary btn-sm Catgorie"> Enregistrer </button> ');
+            div.append(buttonEnregistrer);
+            buttonEnregistrer.on('click', function () {
+                var div = $(this).closest(".Categorie");
+                var idCategorie = div.attr("data-id");
+                
+                //Enregistrer(div);
+            })
+
+            var buttonAnnuler = $('<button class="btn btn-default btn-sm Catgorie"> Annuler </button> ');
+            div.append(buttonAnnuler);
+            buttonAnnuler.on('click', function () {
+                let div = $(this).closest(".Categorie");
+                AnnulerModification(div);
+            })
+
+        }
+
+        function RemplirDivCategorie(divCategorie, categorie) {
+            divCategorie.empty();
+            divCategorie.attr("data-id", categorie.ID);
+            divCategorie.append($('<span></span>').text(categorie.Nom));
+
+            var buttonDelete = $('<button class="btn btn-danger btn-sm Catgorie"> Supprimer </button> ');
+            buttonDelete.on('click', function () {
+                var div = $(this).closest(".Categorie");
+                var idCategorie = div.attr("data-id");
+                Supprimer(idCategorie);
+            })
+
+            var buttonModif = $('<button class="btn btn-primary btn-sm Catgorie"> Modifier </button> ');
+            buttonModif.on('click', function () {
+                Modifier($(this));
+            })
+
+            divCategorie.append(buttonDelete);
+            divCategorie.append(buttonModif);
+        }
+
         function LoadCategories() {
             $.ajax({
                 type: 'GET',
                 url: '/api/categories/',
                 success: function (categories) {
                     var div1 = $("#listeCategories");
-
+                    div1.empty();
                     for (categorie of categories) {
-                        var ul = $('<div class="alert-info Categorie alert"></div>');
-                        ul.attr("data-id", categorie.ID);
-
-                        var buttonDelete = $('<button class="btn btn-danger btn-sm Catgorie"> Delete </button> ');
-                        buttonDelete.on('click', function () {
-                            var div = $(this).closest(".Categorie");
-                            var idCategorie = div.attr("data-id");
-                            Supprimer(idCategorie);
-                        })
-                        ul.val(categorie.ID);
-                        ul.text(categorie.Nom);
-                        ul.append(buttonDelete);
-                        div1.append(ul);
-
+                        var divCategorie = $('<div class="alert-info Categorie alert"></div>');
+                        RemplirDivCategorie(divCategorie, categorie);
+                        div1.append(divCategorie);
                     }
                 }
             });
@@ -147,13 +187,12 @@
             alert("Etes-vous sûr de vouloir supprimer cette Catégorie ?");
             $.ajax({
                 type: 'DELETE',
-                url: '/api/categories/' + idCategorie + '',
+                url: '/api/categories/' + idCategorie,
                 success: function () {
                     jQuery('#Nom').val("");
                     jQuery('#listeCategories').empty();
                     alert("OK");
                     LoadCategories();
-
                 },
                 error: function () {
                     alert("Impossible de supprimer. Peut-être la catégorie est liée à une tâche ?")
@@ -161,6 +200,29 @@
 
             }
             );
+        }
+
+        function AnnulerModification(divCategorie) {
+            let idCategorie = divCategorie.data('id');
+            let nomCategorie = divCategorie.data('nom');            // nom que j'avais stocké plus haut
+            RemplirDivCategorie(divCategorie, { ID: idCategorie, Nom: nomCategorie });
+            
+        }
+
+        function EnregistrerModification(divCategorie) {
+            let idCategorie = divCategorie.data('id');
+            let nomCategorie = divCategorie.find('input').val();
+            $.ajax({
+                type: 'PUT',
+                url: '/api/categories/' + idCategorie,
+                data: {
+                    ID: idCategorie,
+                    nom: nomCategorie
+                },
+                success: function () {
+                    RemplirDivCategorie(divCategorie, { ID: idCategorie, Nom: nomCategorie });
+                }
+            });
         }
 
         $(document).ready(function () {

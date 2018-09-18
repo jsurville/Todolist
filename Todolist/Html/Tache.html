@@ -56,7 +56,7 @@
     </ul>
 
     <div class="container" id="idarea">
-        <h1> Tâches </h1>
+        <h1> Mes Tâches </h1>
 
         <form novalidate>
 
@@ -74,8 +74,11 @@
                 <select class="form-control" id="Categorie" required></select>
             </div>
         </form>
-        <button class="btn btn-primary" onclick="Enregistrer()"> Enregistrer</button>
-        <a class="btn btn-default" href="/index.html"> Annuler</a> 
+        <div style="float:right">
+            <button class="btn btn-primary" onclick="Enregistrer()"> Enregistrer</button>
+            <a class="btn btn-default" href="/Html/Tache.html"> Annuler</a>
+        </div>
+        
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <script>
@@ -97,12 +100,18 @@
                 Description: $('#Description').val(),
                 CategorieID: $('#Categorie').val()
             }
-            console.log(Nom)
+            
             $.ajax({
                 type: 'POST',
                 url: '/api/taches',
                 data: tache,
-                success: function () { alert("OK"); jQuery('#idarea').html(""); LoadCategories() },
+                success: function () {
+                    alert("OK");
+                    $('#Nom').val("");
+                    $('#Description').val("");
+                    $('#Categorie').val("");
+                    LoadCategories();
+                },
                 error: function () {
                     console.log(Nom)
                     alert("Erreur")

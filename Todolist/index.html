@@ -72,12 +72,8 @@
     </ul>
 
     <div class="container">
-        <h1>Todo</h1>
-        <div style="margin-bottom:25px">
-            <a href="/Html/Tache.html" class="btn btn-primary"> Nouvelle Tâche</a>
-            <a href="/Html/Categorie.html" class="btn btn-primary"> Catégories </a>
-        </div>
-
+        <h1>Mon Agenda</h1>
+        
         <div id="listeTaches">
 
         </div>
@@ -109,7 +105,7 @@
                             ModifierStatutTache(idTache, this);
                         });
 
-                        var buttonDelete = $('<button class="btn btn-danger btn-sm"> Delete </button> ');
+                        var buttonDelete = $('<button class="btn btn-danger btn-sm"> Supprimer </button> ');
                         buttonDelete.on('click', function () {
                             var div = $(this).closest(".Tache");
                             var idTache = div.attr("data-id");
