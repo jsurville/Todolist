@@ -10,7 +10,8 @@
     
     <style>
         body {
-            background-color:RGB(230,230,230);
+            font-family: Verdana, sans-serif;
+            background-color: RGB(230,230,230);
         }
         .ulmenu {
             list-style-type: none;
@@ -20,6 +21,10 @@
             background-color: #333;
         }
 
+        div {
+            padding: 5px;
+           
+        }
         li {
             float: left;
         }
@@ -30,6 +35,7 @@
                 text-align: center;
                 padding: 14px 16px;
                 text-decoration: none;
+            
             }
 
                 /* Change the link color to #111 (black) on hover */
@@ -50,9 +56,9 @@
 <body>
 
     <ul class="ulmenu">
-        <li class="menu"><a id="accueil" href="/index.html"> ToDoList</a></li>
-        <li class="menu"><a class="active" id="tach" href="/Html/Tache.html"> Tâches </a></li>
-        <li class="menu"><a id="cat" href="/Html/Categorie.html"> Catégories</a></li>
+        <li class="menu"><a id="accueil" href="/index.html"> Mon Agenda</a></li>
+        <li class="menu"><a class="active" id="tach" href="/Html/Tache.html"> Nouvelle Tâche </a></li>
+        <li class="menu"><a id="cat" href="/Html/Categorie.html"> Mes Catégories</a></li>
     </ul>
 
     <div class="container" id="idarea">
@@ -68,6 +74,10 @@
             <div class="form-group">
                 <label for="Description">Description</label>
                 <textarea class="form-control" id="Description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="DateFin">Date de Fin</label>
+                <input type="date" class="form-control" id="DateFin" />
             </div>
             <div class="form-group">
                 <label for="Categorie">Categorie</label>
@@ -98,6 +108,7 @@
             var tache = {
                 Nom: $('#Nom').val(),
                 Description: $('#Description').val(),
+                DateFin: $('#DateFin').val(),
                 CategorieID: $('#Categorie').val()
             }
             
@@ -106,14 +117,14 @@
                 url: '/api/taches',
                 data: tache,
                 success: function () {
-                    alert("OK");
-                    $('#Nom').val("");
-                    $('#Description').val("");
-                    $('#Categorie').val("");
-                    LoadCategories();
+                    alert("La nouvelle tâche a été enregistrée");
+                    var form = $('form');
+                   form[0].reset();
+                    form.removeClass('was-validated');
+                    $('#Nom').focus(); // pour rafraichir le formulaire et le remettre vide
+                    //window.location.href = '/Html/Tache.html';
                 },
                 error: function () {
-                    console.log(Nom)
                     alert("Erreur")
                 }
             });
@@ -128,7 +139,7 @@
                     var select = $("#Categorie");
                     select.empty();
                     select.append($('<option></option>'));
-                    console.log(categories);
+                    
                     for (categorie of categories) {
                         var option = $('<option></option>');
                         option.val(categorie.ID);

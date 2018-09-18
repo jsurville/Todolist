@@ -8,8 +8,9 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous" />
     <style>
-
+       
         body {
+            font-family: Verdana, sans-serif;
             background-color: RGB(230,230,230);
         }
 
@@ -41,13 +42,18 @@
             float: left;
         }
 
-            li a {
-                display: block;
-                color: white;
-                text-align: center;
-                padding: 14px 16px;
-                text-decoration: none;
-            }
+        div {
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+           
+        }
 
                 /* Change the link color to #111 (black) on hover */
                 li a:hover {
@@ -66,14 +72,14 @@
 
 
     <ul class="ulmenu">
-        <li class="menu"><a class="active" id="accueil" href="index.html"> ToDoList</a></li>
+        <li class="menu"><a class="active" id="accueil" href="index.html"> Mon Agenda</a></li>
         <li class="menu"><a id="planete" href="/Html/Tache.html"> Tâches </a></li>
         <li class="menu"><a id="perso" href="/Html/Categorie.html"> Catégories</a></li>
     </ul>
 
     <div class="container">
         <h1>Mon Agenda</h1>
-        
+        <br />
         <div id="listeTaches">
 
         </div>
@@ -92,6 +98,8 @@
                     for (tache of taches) {
                         var divTache = $('<div class="Tache alert alert-info"></div>'); // on ajoute la classe tache alert du bootstrap
                         divTache.attr("data-id", tache.ID);
+                        
+                        divTache.attr("data-categorieid", tache.CategorieID);
                         var inputEtat = $('<input type="checkbox">');
                         inputEtat.attr('checked', tache.Statut);
                         if (tache.Statut) {
@@ -112,9 +120,18 @@
                             Supprimer(idTache, div);
                         }
                         );
+                        let buttonModifier = $('<button class="btn btn-primary btn-sm"> Modifier </button> ');
+                        buttonModifier.on('click', function () {
+                            var div = $(this).closest(".Tache");
+                            var idTache = div.attr("data-id");
+                            ModifierTache(buttonModifier);
+                        }
+                        );
                         divTache.append(inputEtat);
                         divTache.append($('<label></label>').text(tache.Nom));
+                       
                         divTache.append(buttonDelete);
+                        divTache.append(buttonModifier);
                         divListeTaches.append(divTache);
                     }
                 },
@@ -124,6 +141,7 @@
         function Erreur() {
             alert("Erreur !");
         }
+
         function ModifierStatutTache(id, input) {
             $.ajax({
                 type: 'PUT',
@@ -142,19 +160,66 @@
             });
         }
 
+        function ModifierTache(buttonModif) {
+            var divTache = buttonModif.closest('.Tache');
+            var label = divTache.find('label');
+            var nom = label.text();
+            divTache.empty();
+            var input = $('<input type="text"/>').val(label.text());
+            divTache.append(input);
+            input.focus();
+            input.select();
+
+            
+            var buttonEnregistrer = $('<button class="btn btn-primary btn-sm Catgorie"> Enregistrer </button> ');
+            divTache.append(buttonEnregistrer);
+
+            buttonEnregistrer.on('click', function () {
+                let div = $(this).closest(".Tache");
+                let idTache = div.attr("data-id");
+                let idcategorie = div.attr("data-categorieid");
+                
+                EnregistrerModification(div);
+            })
+
+            var buttonAnnuler = $('<button class="btn btn-default btn-sm Catgorie"> Annuler </button> ');
+            divTache.append(buttonAnnuler);
+            buttonAnnuler.on('click', function () {
+                let div = $(this).closest(".Tache");
+                //AnnulerModification(div);
+            })
+        }
+
+        function EnregistrerModification(divTache) {
+            let idTache = divTache.data('id');
+            let nomTache = divTache.find('input').val();
+            let idcategorie = divTache.data('categorieid')
+            $.ajax({
+                type: 'PUT',
+                url: '/api/taches/' + idTache,
+                data: {
+                    ID: idTache,
+                    nom: nomTache,
+                    categorieID: idcategorie
+                },
+                success: function () {
+                    getTaches();
+                    // RemplirDivCategorie(divCategorie, { ID: idCategorie, Nom: nomCategorie });
+                }
+            });
+
+        }
+
         function Supprimer(id, div) {
             $.ajax({
                 type: 'DELETE',
                 url: '/api/taches/' + id + '',
                 success: function (input) {
-
                     $(div).remove();
-
                 },
                 error: function () {
                     alert("Erreur !")
                 },
-
             }
             );
         }
