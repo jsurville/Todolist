@@ -7,12 +7,15 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous" />
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <style>
         body {
             font-family: Verdana, sans-serif;
             background-color: RGB(230,230,230);
         }
+
         .ulmenu {
             list-style-type: none;
             margin: 0;
@@ -23,8 +26,8 @@
 
         div {
             padding: 5px;
-           
         }
+
         li {
             float: left;
         }
@@ -35,27 +38,25 @@
                 text-align: center;
                 padding: 14px 16px;
                 text-decoration: none;
-            
             }
 
         .Tache :hover {
             background-color: RGB(230,230,230); /* Green */
             color: cornflowerblue;
         }
-                /* Change the link color to #111 (black) on hover */
-                li a:hover {
-                    background-color: #111;
-                    text-decoration: none;
-                }
+        /* Change the link color to #111 (black) on hover */
+        li a:hover {
+            background-color: #111;
+            text-decoration: none;
+        }
+
         .active {
             background-color: #4CAF50;
             color: white;
         }
-        
-
     </style>
 
-   </head >
+</head>
 
 <body>
 
@@ -70,7 +71,6 @@
         <h1> Mes Tâches </h1>
 
         <form novalidate>
-
             <div class="form-group">
                 <label for="Nom">Nom</label>
                 <input type="text" class="form-control" id="Nom" required />
@@ -93,7 +93,18 @@
 
             <div class="form-group">
                 <label for="Categorie">Categorie</label>
-                <select class="form-control" id="Categorie" required></select>
+                <select class="form-control" id="Categorie" required>
+                </select>
+                <span>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseCategorie" aria-expanded="false" aria-controls="collapseCategorie"> + </button>
+                </span>
+                <div class="collapse" id="collapseCategorie">
+                    <div class="card card-body">
+                        <input type="text" id="nomCategorie" />
+                        <button class="btn btn-primary" onclick="AjouterCategorie()"> Ajouter</button>
+                    </div>
+                    
+                </div>
             </div>
         </form>
         <div style="float:right">
@@ -145,13 +156,33 @@
             return false;
         }
 
+
+        function AjouterCategorie() {
+                       
+            let categorie = {
+                Nom: $('#nomCategorie').val()
+            }
+            console.log(categorie)
+            $.ajax({
+                type: 'POST',
+                url: '/api/categories',
+                data: categorie,
+                success: function () {
+                    console.log(Nom)
+                    alert("Ok");
+                    LoadCategories();
+                }               
+            })
+        }
+
         function LoadCategories() {
             $.ajax({
                 type: 'GET',
                 url: '/api/categories/',
                 success: function (categories) {
                     var select = $("#Categorie");
-                    select.empty();
+                    //select.empty();
+
                     select.append($('<option></option>'));
                     
                     for (categorie of categories) {
