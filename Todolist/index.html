@@ -22,10 +22,10 @@
                 float: right;
             }
 
-            /*.Tache :hover {
-                background-color: #4CAF50;
-             color: white;}/* Green */
-               
+        .Tache :hover {
+            background-color: RGB(230,230,230); /* Green */
+            color: cornflowerblue;
+        }
             
         .Tache input[type=checkbox] {
             margin-right:10px;
@@ -175,18 +175,18 @@
             divTache.append(buttonEnregistrer);
 
             buttonEnregistrer.on('click', function () {
-                let div = $(this).closest(".Tache");
-                let idTache = div.attr("data-id");
-                let idcategorie = div.attr("data-categorieid");
+                let divTache = $(this).closest(".Tache");
+                let idTache = divTache.attr("data-id");
+                let idcategorie = divTache.attr("data-categorieid");
                 
-                EnregistrerModification(div);
+                EnregistrerModification(divTache);
             })
 
             var buttonAnnuler = $('<button class="btn btn-default btn-sm Catgorie"> Annuler </button> ');
             divTache.append(buttonAnnuler);
             buttonAnnuler.on('click', function () {
-                let div = $(this).closest(".Tache");
-                //AnnulerModification(div);
+                let divTache = $(this).closest(".Tache");
+                AnnulerModification(divTache);
             })
         }
 
@@ -207,6 +207,13 @@
                     // RemplirDivCategorie(divCategorie, { ID: idCategorie, Nom: nomCategorie });
                 }
             });
+
+        }
+
+        function AnnulerModification(divTache) {
+            let idTache = divTache.data('id');
+            let nomTache = divTache.data('nom');            // nom que j'avais stocké plus haut
+            getTaches();
 
         }
 
