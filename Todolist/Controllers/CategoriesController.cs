@@ -57,10 +57,16 @@ namespace Todolist.Controllers
         public IHttpActionResult DeleteCategories(int id)
         {
 
+            
             var categorie = db.Categories.Find(id);
+
+            Tache tache = db.Taches.ToList().Find(y => y.CategorieID == id);
 
             if (categorie == null)
                 return NotFound();
+            if(tache != null)
+                return BadRequest("Impossible car la Catégorie sélectionnée est associée à une tâche");
+
 
             db.Entry(categorie).State = System.Data.Entity.EntityState.Deleted;
             db.SaveChanges();

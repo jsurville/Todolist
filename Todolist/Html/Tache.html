@@ -170,7 +170,8 @@
                 success: function () {
                     console.log(Nom)
                     alert("Ok");
-                    LoadCategories();
+                    //LoadCategories();
+                    $("#Nom").focus();
                 }               
             })
         }
@@ -181,7 +182,7 @@
                 url: '/api/categories/',
                 success: function (categories) {
                     var select = $("#Categorie");
-                    //select.empty();
+                    select.empty();
 
                     select.append($('<option></option>'));
                     

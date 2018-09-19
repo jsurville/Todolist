@@ -91,7 +91,7 @@
             <form novalidate>
                 <div class="form-group">
                     <label for="Nom">Nom</label>
-                    <input type="text" class="form-control" id="Nom" required />
+                    <input type="text" class="form-control" id="Nom" placeholder="Nouvelle Categorie" required />
                     <div class="invalid-feedback"> Champ requis </div>
                 </div>
             </form>
@@ -127,10 +127,13 @@
                 url: '/api/categories',
                 data: categorie,
                 success: function () {
-                    jQuery("#listeCategories").empty();
-                    alert("OK");
-                    jQuery('#Nom').val("");
+                    
                     LoadCategories();
+                    let form = $('form');
+                    form[0].reset();
+                    form.removeClass('was-validated');
+                    $('#Nom').focus();
+
                 },
                 error: function () {
                     console.log(Nom)
