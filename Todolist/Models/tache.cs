@@ -21,10 +21,13 @@ namespace Todolist.Models
         public bool Statut { get; set; }
         public int? Priorite { get; set; }
 
+        
         public int CategorieID { get; set; }
-
-         [ForeignKey("CategorieID")]
+      
+        
+        [ForeignKey("CategorieID")]        
         public Categorie Categorie { get; set; }
+       
 
     }
 }

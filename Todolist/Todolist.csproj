@@ -86,6 +86,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Html\Agenda.html" />
     <Content Include="Html\Categorie.html" />
     <Content Include="Html\Tache.html" />
     <Content Include="index.html" />

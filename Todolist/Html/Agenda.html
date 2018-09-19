@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous" />
+    <style>
+
+        body {
+            font-family: Verdana, sans-serif;
+            background-color: RGB(230,230,230);
+        }
+
+        .Tache {
+            border: solid 1px;
+            padding: 10px;
+        }
+
+            .Tache button {
+                display: none;
+                float: right;
+                margin-right:4px;
+            }
+
+            .Tache :hover {
+                background-color: RGB(230,230,230); /* Green */
+                color: cornflowerblue;
+            }
+
+        .Tache:hover button {
+            display: block;
+        }
+
+
+            .Tache input[type=checkbox] {
+                margin-right: 10px;
+            }
+
+        .ulmenu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        div {
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+            /* Change the link color to #111 (black) on hover */
+            li a:hover {
+                background-color: #111;
+                text-decoration: none;
+            }
+
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+
+    <ul class="ulmenu">
+        <li class="menu"><a id="accueil" href="/index.html"> ToDoList</a></li>
+        <li class="menu"><a class="active" id="agenda" href="Html/Agenda.html"> Mon Agenda</a></li>
+        <li class="menu"><a id="tach" href="/Html/Tache.html"> Tâches </a></li>
+        <li class="menu"><a id="cat" href="/Html/Categorie.html"> Mes Catégories</a></li>
+    </ul>
+
+    <div class="container">
+        <h1>Mon Agenda</h1>
+        <br />
+        <div id="listeTaches">
+
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script>
+        function getTaches() {
+            $.ajax({
+                url: '/api/taches',
+                success: function (taches) {
+                    var divListeTaches = $('#listeTaches');
+                    divListeTaches.empty();
+                    for (tache of taches) {
+                        var divTache = $('<div class="Tache alert alert-info"></div>'); // on ajoute la classe tache alert du bootstrap
+                        divTache.attr("data-id", tache.ID);
+
+                        divTache.attr("data-categorieid", tache.CategorieID);
+                        var inputEtat = $('<input type="checkbox">');
+                        inputEtat.attr('checked', tache.Statut);
+                        if (tache.Statut) {
+                            divTache.addClass('alert-danger'); // classe qui permet de faire apparaitre en vert si l'état est "coché"
+                        }
+
+                        // Appeler le serveur quand on clique dessus
+                        inputEtat.on('click', function () {
+                            var div = $(this).closest(".Tache");
+                            var idTache = div.attr("data-id");
+                            ModifierStatutTache(idTache, this);
+                        });
+
+                        var buttonDelete = $('<button class="btn btn-danger btn-sm"> Supprimer </button> ');
+                        buttonDelete.on('click', function () {
+                            var div = $(this).closest(".Tache");
+                            var idTache = div.attr("data-id");
+                            Supprimer(idTache, div);
+                        }
+                        );
+                        let buttonModifier = $('<button class="btn btn-primary btn-sm"> Modifier </button> ');
+                        buttonModifier.on('click', function () {
+                            var div = $(this).closest(".Tache");
+                            var idTache = div.attr("data-id");
+                            ModifierTache(buttonModifier);
+                        }
+                        );
+                        divTache.append(inputEtat);
+                        divTache.append($('<label></label>').text(tache.Nom));
+
+                        divTache.append(buttonDelete);
+                        divTache.append(buttonModifier);
+                        divListeTaches.append(divTache);
+                    }
+                },
+                error: Erreur
+            });
+        }
+        function Erreur() {
+            alert("Erreur !");
+        }
+
+        function ModifierStatutTache(id, input) {
+            $.ajax({
+                type: 'PUT',
+                url: '/api/tachestatut/' + id + '?statut=' + input.checked,
+                success: function () {
+                    var divTache = $(input).closest(".Tache");
+                    if (input.checked) {
+                        divTache.removeClass('alert-info');
+                        divTache.addClass('alert-success'); // passe en fond vert
+                    } else {
+                        divTache.removeClass('alert-success');
+                        divTache.addClass('alert-info');
+                    }
+                },
+                error: Erreur
+            });
+        }
+
+        function ModifierTache(buttonModif) {
+            var divTache = buttonModif.closest('.Tache');
+            var label = divTache.find('label');
+            var nom = label.text();
+            divTache.empty();
+            var input = $('<input type="text"/>').val(label.text());
+            divTache.append(input);
+            input.focus();
+            input.select();
+
+
+            var buttonEnregistrer = $('<button class="btn btn-primary btn-sm Catgorie"> Enregistrer </button> ');
+            divTache.append(buttonEnregistrer);
+
+            buttonEnregistrer.on('click', function () {
+                let divTache = $(this).closest(".Tache");
+                let idTache = divTache.attr("data-id");
+                let idcategorie = divTache.attr("data-categorieid");
+
+                EnregistrerModification(divTache);
+            })
+
+            var buttonAnnuler = $('<button class="btn btn-default btn-sm Catgorie"> Annuler </button> ');
+            divTache.append(buttonAnnuler);
+            buttonAnnuler.on('click', function () {
+                let divTache = $(this).closest(".Tache");
+                AnnulerModification(divTache);
+            })
+        }
+
+        function EnregistrerModification(divTache) {
+            let idTache = divTache.data('id');
+            let nomTache = divTache.find('input').val();
+            let idcategorie = divTache.data('categorieid')
+            $.ajax({
+                type: 'PUT',
+                url: '/api/taches/' + idTache,
+                data: {
+                    ID: idTache,
+                    nom: nomTache,
+                    categorieID: idcategorie
+                },
+                success: function () {
+                    getTaches();
+                    // RemplirDivCategorie(divCategorie, { ID: idCategorie, Nom: nomCategorie });
+                }
+            });
+
+        }
+
+        function AnnulerModification(divTache) {
+            let idTache = divTache.data('id');
+            let nomTache = divTache.data('nom');            // nom que j'avais stocké plus haut
+            getTaches();
+
+        }
+
+        function Supprimer(id, div) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/taches/' + id + '',
+                success: function (input) {
+                    $(div).remove();
+                },
+                error: function () {
+                    alert("Erreur !")
+                },
+            }
+            );
+        }
+
+
+
+        getTaches();
+    </script>
+</body>
+</html>

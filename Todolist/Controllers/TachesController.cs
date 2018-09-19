@@ -20,19 +20,19 @@ namespace Todolist.Controllers
         // GET: api/Taches
         public IQueryable<Tache> GetTaches()
         {
-            return db.Taches;
+            return db.Taches.Include(x => x.Categorie);
         }
 
         // GET: api/Taches/5
         [ResponseType(typeof(Tache))]
         public IHttpActionResult GetTache(int id)
         {
-            Tache tache = db.Taches.Find(id);
+            Tache tache = db.Taches.Include(x => x.Categorie).SingleOrDefault(y => y.ID == id) ;
             if (tache == null)
             {
                 return NotFound();
             }
-
+            
             return Ok(tache);
         }
 

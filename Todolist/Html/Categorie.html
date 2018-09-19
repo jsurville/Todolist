@@ -11,7 +11,7 @@
         body {
             font-family: Verdana, sans-serif;
             background-color: RGB(230,230,230);
-            line-height:1.9;
+            line-height:1.5;
         }
         .Categorie {
             border: solid 1px;
@@ -21,9 +21,14 @@
                 background-color: RGB(230,230,230); /* Green */
                 color: cornflowerblue;
             }
-        .Categorie button {
-            float: right;
-        }
+            .Categorie:hover button {
+                display:block;
+            }
+            .Categorie button {
+                display: none;
+                float: right;
+                margin-right: 4px;
+            }
         .ulmenu {
             list-style-type: none;
             margin: 0;
@@ -60,10 +65,11 @@
 </head>
 
 <body id="idarea">
-        <ul class="ulmenu">
-        <li class="menu"><a id="accueil" href="/index.html"> Mon Agenda</a></li>
+    <ul class="ulmenu">
+        <li class="menu"><a id="accueil" href="/index.html"> ToDoList </a></li>
+        <li class="menu"><a id="agenda" href="/Html/Agenda.html"> Mon Agenda</a></li>
         <li class="menu"><a id="tach" href="/Html/Tache.html"> Tâches </a></li>
-        <li class="menu"><a class="active" id="cat" href="/Html/Categorie.html"> Catégories</a></li>
+        <li class="menu"><a  class="active" id="cat" href="/Html/Categorie.html"> Mes Catégories</a></li>
     </ul>
 
         <div class="container">
