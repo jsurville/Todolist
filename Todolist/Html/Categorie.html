@@ -209,14 +209,14 @@
         }
 
         function Supprimer(idCategorie) {
-            alert("Etes-vous sûr de vouloir supprimer cette Catégorie ?");
+            
             $.ajax({
                 type: 'DELETE',
                 url: '/api/categories/' + idCategorie,
                 success: function () {
                     jQuery('#Nom').val("");
                     jQuery('#listeCategories').empty();
-                    alert("OK");
+                    alert("La catégorie a été supprimée");
                     LoadCategories();
                 },
                 error: function () {

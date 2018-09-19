@@ -29,7 +29,7 @@ namespace Todolist.Migrations
                         CategorieID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.Categories", t => t.CategorieID, cascadeDelete: true)
+                .ForeignKey("dbo.Categories", t => t.CategorieID, cascadeDelete: false)
                 .Index(t => t.CategorieID);
             
         }
