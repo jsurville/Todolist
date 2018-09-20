@@ -8,7 +8,7 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous" />
     <style>
-       
+
         body {
             font-family: Verdana, sans-serif;
             background-color: RGB(230,230,230);
@@ -18,19 +18,22 @@
             border: solid 1px;
             padding: 10px;
         }
-        .Tache button {
+
+            .Tache button {
                 float: right;
             }
 
-        .Tache :hover {
-            background-color: RGB(230,230,230); /* Green */
-            color: cornflowerblue;
-        }
-            
-        .Tache input[type=checkbox] {
-            margin-right:10px;
-        }
+            .Tache :hover {
+                background-color: RGB(230,230,230); /* Green */
+                color: cornflowerblue;
+            }
+
+            .Tache input[type=checkbox] {
+                margin-right: 10px;
+            }
+
         .ulmenu {
+            width: 100%;
             list-style-type: none;
             margin: 0;
             padding: 0;
@@ -45,47 +48,50 @@
         div {
             padding: 5px;
             margin-bottom: 5px;
-
             border: none;
         }
+
         li a {
             display: block;
             color: white;
+            align-content: center;
             text-align: center;
-            padding: 14px 16px;
+            padding: 12px 14px;
             text-decoration: none;
-           
+            font-size: 2rem;
+            height: 100%;
         }
+            /* Change the link color to #555  on hover */
+            li a:hover {
+                background-color: #555;
+                text-decoration: none;
+                color: RGB(70,100,170);
+            }
 
-                /* Change the link color to #111 (black) on hover */
-                li a:hover {
-                    background-color: #111;
-                    text-decoration: none;
-                }
         .active {
             background-color: #4CAF50;
             color: white;
         }
 
         #titre {
-        text-align:center;
+            text-align: center;
         }
+
         img.displayed {
             display: block;
             margin-right: auto;
             margin-left: auto;
+            max-height: 250px;
+            width: 100%;
         }
-
     </style>
 </head>
 <body>
-
-
     <ul class="ulmenu">
         <li class="menu"><a class="active" id="accueil" href="index.html"> ToDoList </a></li>
-        <li class="menu"><a id="agenda" href="Html/Agenda.html"> Mon Agenda</a></li>
+        <!--<li class="menu"><a id="agenda" href="Html/Agenda.html"> Mon Agenda</a></li>
         <li class="menu"><a id="planete" href="/Html/Tache.html"> Mes Tâches </a></li>
-        <li class="menu"><a id="perso" href="/Html/Categorie.html"> Mes Catégories</a></li>
+        <li class="menu"><a id="perso" href="/Html/Categorie.html"> Mes Catégories</a></li>-->
     </ul>
 
     <div class="row">
